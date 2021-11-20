@@ -9,47 +9,45 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <title>Dolce Baker</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="styles.css"/>
 
 </head>
 <body>
-    <%@include file="header.jsp"%>
-    <%
-        HashMap<String, StoreItem> cart = (HashMap<String, StoreItem>) request.getSession().getAttribute("cart");
-        if (cart == null) {
-            out.println("cart empty");
-        } else {
-            int total = 0;
-            for (StoreItem item: cart.values()) {
-                total += item.getQuantity() * item.getPrice();
+<%@include file="header.jsp" %>
+<%
+    HashMap<String, StoreItem> cart = (HashMap<String, StoreItem>) request.getSession().getAttribute("cart");
+    if (cart == null || cart.isEmpty()) {
+        out.println("cart empty");
+    } else {
+        int total = 0;
+        for (StoreItem item : cart.values()) {
+            total += item.getQuantity() * item.getPrice();
 
-                out.println("<div>");
-                out.println("<div>" + item.getName() + "</div>");
-                out.println("<div>" + item.getQuantity() + "</div>");
-                out.println("<div>" + item.getPrice() + "</div>");
-                out.println("<div>" + item.getImg() + "</div>");
-                out.println("<a href="+ request.getContextPath() + "/ChangeQuantityServlet" + "?id=" + item.getId() + "&operation=add" +"> add</a>");
-                out.println("<a href="+ request.getContextPath() + "/ChangeQuantityServlet" + "?id=" + item.getId() + "&operation=minus" +"> less</a>");
-
-                out.println("</div>");
-
-            }
             out.println("<div>");
+            out.println("<div>" + item.getName() + "</div>");
+            out.println("<div>" + item.getQuantity() + "</div>");
+            out.println("<div>" + item.getPrice() * item.getQuantity() + "</div>");
+            out.println("<a href=" + request.getContextPath() + "/ChangeQuantityServlet" + "?id=" + item.getId() + "&operation=add" + "> add</a>");
+            out.println("<a href=" + request.getContextPath() + "/ChangeQuantityServlet" + "?id=" + item.getId() + "&operation=minus" + "> less</a>");
 
-            out.println("total price: " + total);
             out.println("</div>");
 
-
-
         }
+        out.println("<div>");
+
+        out.println("total price: " + total);
+        out.println("</div>");
+
+        out.println("<a href='" + request.getContextPath() + "/OrderForm'> Continue </a>");
+
+    }
 
 
-
-    %>
-    <%@include file="footer.jsp"%>
+%>
+<%@include file="footer.jsp" %>
 </body>
 </html>
