@@ -18,36 +18,81 @@
 </head>
 <body>
 <%@include file="header.jsp" %>
-<%
-    HashMap<String, StoreItem> cart = (HashMap<String, StoreItem>) request.getSession().getAttribute("cart");
-    if (cart == null || cart.isEmpty()) {
-        out.println("cart empty");
-    } else {
-        int total = 0;
-        for (StoreItem item : cart.values()) {
-            total += item.getQuantity() * item.getPrice();
-
-            out.println("<div>");
-            out.println("<div>" + item.getName() + "</div>");
-            out.println("<div>" + item.getQuantity() + "</div>");
-            out.println("<div>" + item.getPrice() * item.getQuantity() + "</div>");
-            out.println("<a href=" + request.getContextPath() + "/ChangeQuantityServlet" + "?id=" + item.getId() + "&operation=add" + "> add</a>");
-            out.println("<a href=" + request.getContextPath() + "/ChangeQuantityServlet" + "?id=" + item.getId() + "&operation=minus" + "> less</a>");
-
-            out.println("</div>");
-
-        }
-        out.println("<div>");
-
-        out.println("total price: " + total);
-        out.println("</div>");
-
-        out.println("<a href='" + request.getContextPath() + "/OrderForm'> Continue </a>");
-
-    }
 
 
-%>
+<div class="small-container cart-page">
+    <div class="container">
+        <h2 class="text-center display-2 fw-normal">Shopping Cart</h2>
+        <br>
+    </div>
+    <table>
+        <tr>
+            <th> Product</th>
+            <th> Quantity</th>
+            <th> Subtotal</th>
+        </tr>
+        <%
+            HashMap<String, StoreItem> cart = (HashMap<String, StoreItem>) request.getSession().getAttribute("cart");
+            int total = 0;
+            int shippingFee = 150;
+            if (cart != null && !cart.isEmpty()) {
+                for (StoreItem item : cart.values()) {
+                    total += item.getQuantity() * item.getPrice();
+        %>
+        <tr>
+            <td>
+                <div class="cart-info">
+                    <img src="images/<%=item.getImg()%>">
+                    <div>
+                        <p><%=item.getName()%>
+                        </p>
+                        <small>Price: Php<%=item.getPrice()%>
+                        </small>
+                        <br>
+                        <a style="text-decoration:none"
+                           href="${pageContext.request.contextPath}/ChangeQuantityServlet?id=<%=item.getId()%>&operation=minus">
+                            - </a>
+                        <a style="text-decoration:none"
+                           href="${pageContext.request.contextPath}/ChangeQuantityServlet?id=<%=item.getId()%>&operation=add">
+                            + </a>
+                    </div>
+                </div>
+
+            </td>
+            <td><p><%=item.getQuantity()%>
+            </p></td>
+            <td> Php <%=item.getQuantity() * item.getPrice()%>
+            </td>
+        </tr>
+        <% }
+        } %>
+    </table>
+    <div class="total-price">
+        <table>
+            <tr>
+                <td>Subtotal</td>
+                <td>PHP<%=total%>
+                </td>
+            </tr>
+            <tr>
+                <td>Shipping Fee</td>
+                <td>PHP<%=shippingFee%>
+                </td>
+            </tr>
+            <tr>
+                <td>Total</td>
+                <td>PHP<%=total + shippingFee%>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <div class="order">
+            <br>
+            <a class="order_button" href="${pageContext.request.contextPath}/OrderForm">Order Now</a>
+        </div>
+    </div>
+</div>
 <%@include file="footer.jsp" %>
 </body>
 </html>
